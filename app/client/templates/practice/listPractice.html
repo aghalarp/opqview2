@@ -1,0 +1,21 @@
+<template name="listPractice">
+  <table class="table">
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Address</th>
+      <th>Edit</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    {{#each practiceList}}
+      <tr>
+        <td>{{name}}</td>
+        <td>{{address}}</td>
+        <td><a href="{{pathFor 'editPractice'}}">Edit</a></td>
+      </tr>
+    {{/each}}
+    </tbody>
+  </table>
+</template>

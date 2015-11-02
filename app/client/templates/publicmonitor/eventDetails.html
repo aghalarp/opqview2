@@ -1,0 +1,77 @@
+<template name="eventDetails">
+  <div class="row">
+    <!-- Hidden fields that allow us to store the location of each event -->
+    <input type="hidden" id="details-center-lat" />
+    <input type="hidden" id="details-center-lng" />
+    <input type="hidden" id="details-zoom" />
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 id="event-title" class="panel-title">
+          <i class="fa fa-plug" style="margin-right: 5px;"></i>Event Details
+          <button style="margin-top:-7px" type="button" class="btn btn-default btn-sm pull-right" data-toggle="modal" data-target="#eventDetailsModal">
+            <i class="fa fa-question-circle fa-lg"></i>
+          </button>
+        </h3>
+      </div>
+      <div class="panel-body">
+        <div class="col-md-4">
+          <!--@if(data.detailedEvent.ne(null)) {-->
+          <table class="table table-condensed">
+            <tbody>
+            <tr>
+              <td>Frequency</td>
+              <td id="details-frequency">
+                <!--@utils.DisplayUtils.twoDecimal.format(data.detailedEvent.event.getFrequency)-->
+                Hz
+              </td>
+            </tr>
+            <tr>
+              <td>Voltage</td>
+              <td id="details-voltage">
+                <!--@utils.DisplayUtils.oneDecimal.format(data.detailedEvent.event.getVoltage)-->
+                V
+              </td>
+            </tr>
+            <tr>
+              <td>Duration</td>
+              <td id="details-duration">
+                <!--@data.detailedEvent.event.getDuration --> s
+              </td>
+            </tr>
+            <tr>
+              <td id="details-itic-title">ITIC</td>
+              <td id="details-itic-severity">
+                <span class='badge itic-badge itic-no-interruption'>&nbsp;</span>
+              </td>
+            </tr>
+            <tr>
+              <td>Location</td>
+              <td>
+                <a class="btn-link" id="details-grid-id">
+                  <!--@data.detailedEvent.event.getLocation.getGridId-->
+                </a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <!--} else {-->
+          <!--No event details to display.-->
+          <!--}-->
+        </div>
+        <div id="waveform" class="col-md-4 plot"></div>
+      </div>
+      <div class="panel-footer panel-title">
+        <button type="button" class="btn btn-primary btn-xs" id="prev-event-btn">
+          <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+        </button>
+
+        Prev / Next
+
+        <button type="button" class="btn btn-primary btn-xs" id="next-event-btn">
+          <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</template>

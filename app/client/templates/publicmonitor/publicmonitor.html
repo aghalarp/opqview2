@@ -1,0 +1,38 @@
+<template name="publicmonitor">
+  <!-- Two column layout. Left column: filters & map. Right column: Events and event details. -->
+  <div class="row">
+
+    <!-- Filters and map -->
+    <div class="col-md-5">
+      <div class="row">
+        <div class="col-md-12">
+          {{> filters}}
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          {{> map}}
+        </div>
+      </div>
+    </div>
+
+    <!-- Events and event details -->
+    <div class="col-md-7" id="public-map-right-col">
+      <div class="row">
+        <div class="col-md-12">
+          {{> eventList}}
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          {{> eventDetails}}
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+</template>
