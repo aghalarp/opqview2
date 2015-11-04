@@ -23,3 +23,10 @@ Template.event.helpers({
     return badge;
   }
 });
+
+Template.event.events({
+  'click tr': function(event) {
+    var eventId = event.currentTarget.id; //Grabs the TR id value, which is the event id.
+    Session.set("selectedEvent", eventId);
+  }
+});

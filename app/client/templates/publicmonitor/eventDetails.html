@@ -5,6 +5,7 @@
     <input type="hidden" id="details-center-lng" />
     <input type="hidden" id="details-zoom" />
 
+
     <div class="panel panel-default">
       <div class="panel-heading">
         <h3 id="event-title" class="panel-title">
@@ -15,28 +16,26 @@
         </h3>
       </div>
       <div class="panel-body">
+        {{#with event}}
         <div class="col-md-4">
-          <!--@if(data.detailedEvent.ne(null)) {-->
           <table class="table table-condensed">
             <tbody>
             <tr>
               <td>Frequency</td>
               <td id="details-frequency">
-                <!--@utils.DisplayUtils.twoDecimal.format(data.detailedEvent.event.getFrequency)-->
-                Hz
+                {{value}} Hz
               </td>
             </tr>
             <tr>
               <td>Voltage</td>
               <td id="details-voltage">
-                <!--@utils.DisplayUtils.oneDecimal.format(data.detailedEvent.event.getVoltage)-->
-                V
+                {{value}} V
               </td>
             </tr>
             <tr>
               <td>Duration</td>
               <td id="details-duration">
-                <!--@data.detailedEvent.event.getDuration --> s
+                {{duration}} s
               </td>
             </tr>
             <tr>
@@ -60,7 +59,9 @@
           <!--}-->
         </div>
         <div id="waveform" class="col-md-4 plot"></div>
+        {{/with}}
       </div>
+
       <div class="panel-footer panel-title">
         <button type="button" class="btn btn-primary btn-xs" id="prev-event-btn">
           <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
@@ -73,5 +74,6 @@
         </button>
       </div>
     </div>
+
   </div>
 </template>
