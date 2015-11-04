@@ -47,10 +47,10 @@ Schemas.Filters = new SimpleSchema({
     }
   },
   startTime: {
-    type: String
+    type: Date
   },
   stopTime: {
-    type: String
+    type: Date
   }
 
 });

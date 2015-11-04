@@ -32,14 +32,6 @@ Template.filters.helpers({
   iticDefaultChecked: function() {
     return ["ok", "moderate", "severe"];
   },
-  minFreq: function() {
-    var result = Events.findOne({}, {sort: {value: 1}});
-    return result.value;
-  },
-  maxFreq: function() {
-    var result = Events.findOne({}, {sort: {value: -1}});
-    return result.value;
-  },
   prefill: function() {
     var requestFreq, minFreq, maxFreq, requestVolt, minVolt, maxVolt, minDur, maxDur, itic, startTime, stopTime;
 

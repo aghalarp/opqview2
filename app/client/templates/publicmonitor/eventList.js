@@ -5,13 +5,12 @@ Template.eventList.helpers({
 
       check(filters, Schemas.Filters);
 
+      console.log(filters);
+
       return Events.find({
-        timestamp: {$gte: filters.startTime},
-        timestamp: {lte: filters.stopTime},
-        value: {$gte: filters.minFreq},
-        value: {$lte: filters.maxFreq},
-        duration: {$gte: filters.minDuration},
-        duration: {$lte: filters.maxDuration},
+        timestamp: {$gte: filters.startTime, $lte: filters.stopTime},
+        value: {$gte: filters.minFreq, $lte: filters.maxFreq},
+        duration: {$gte: filters.minDuration, $lte: filters.maxDuration}
       },
         {sort: {timestamp: -1}});
     }
