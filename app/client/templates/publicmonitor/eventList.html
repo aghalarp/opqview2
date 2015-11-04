@@ -14,9 +14,9 @@
       <div class="panel-body" id="events-table">
         <table>
           <tr>
-            <td>Total Events</td> <td><span id="totalEvents" class='badge global-stats'>30</span></td>
-            <td>Frequency Events</td> <td><span id="totalFrequencyEvents" class='badge global-stats'>10</span></td>
-            <td>Voltage Events</td> <td><span id="totalVoltageEvents" class='badge global-stats'>20</span></td>
+            <td>Total Events</td> <td><span id="totalEvents" class='badge global-stats'>{{totalEventCount}}</span></td>
+            <td>Frequency Events</td> <td><span id="totalFrequencyEvents" class='badge global-stats'>{{freqEventCount}}</span></td>
+            <td>Voltage Events</td> <td><span id="totalVoltageEvents" class='badge global-stats'>{{voltageEventCount}}</span></td>
           </tr>
         </table>
         <!--@if(data.totalEventsCount > 0) {-->

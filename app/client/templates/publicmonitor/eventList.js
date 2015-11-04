@@ -5,7 +5,7 @@ Template.eventList.helpers({
 
       check(filters, Schemas.Filters);
 
-      console.log(filters);
+      //console.log(filters);
 
       return Events.find({
         timestamp: {$gte: filters.startTime, $lte: filters.stopTime},
@@ -15,6 +15,16 @@ Template.eventList.helpers({
         {sort: {timestamp: -1}});
     }
 
+    // If no filters set yet, return all events.
     return Events.find({}, {sort: {timestamp: -1}}); // Reverse chronological timestamp.
+  },
+  totalEventCount: function() {
+    return Events.find({}).count();
+  },
+  freqEventCount: function() {
+    return Events.find({event_type: "frequency"}).count();
+  },
+  voltageEventCount: function() {
+    return Events.find({event_type: "voltage"}).count();
   }
 });
