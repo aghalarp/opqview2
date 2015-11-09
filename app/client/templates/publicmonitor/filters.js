@@ -1,15 +1,23 @@
 Template.filters.onRendered(function() {
   var template = Template.instance();
 
-  // Initialize DateTimePicker input form.
-  var dtp = template.$(".date");
-  dtp.datetimepicker();
-
+  // Grab min/max event timestamps.
   var startTime = Events.findOne({}, {sort: {timestamp: 1}});
   var stopTime = Events.findOne({}, {sort: {timestamp: -1}});
 
-  template.$("#startTime").data("DateTimePicker").date(new Date(startTime.timestamp));
-  template.$("#stopTime").data("DateTimePicker").date(new Date(stopTime.timestamp));
+  // Initialize DateTimePicker input forms and set settings.
+  var startTimestamp = template.$("#startTime");
+  var stopTimestamp = template.$("#stopTime");
+
+  startTimestamp.datetimepicker({
+    defaultDate: new Date(startTime.timestamp),
+    format: "MM/DD/YYYY h:mm:ss"
+  });
+
+  stopTimestamp.datetimepicker({
+    defaultDate: new Date(stopTime.timestamp),
+    format: "MM/DD/YYYY h:mm:ss"
+  });
 });
 
 Template.filters.events({
@@ -25,6 +33,10 @@ Template.filters.events({
     // Date() function will actually grab the date. The date that we select and see on the datetimepicker widget
     // is purely visual and not actually set until we call this function.
     tif.data("DateTimePicker").date();
+  },
+  // (Experimental). Submit form when input is detected.
+  'change, keyup': function(event) {
+    $("#filterForm").submit();
   }
 });
 
