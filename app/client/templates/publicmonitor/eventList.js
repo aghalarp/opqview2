@@ -5,17 +5,40 @@ Template.eventList.helpers({
 
       check(filters, Schemas.Filters);
 
-      //console.log(filters);
+      // Add an extra second to stopTime due to precision issue when querying.
+      filters.stopTime.setSeconds(filters.stopTime.getSeconds() + 1);
 
-      return Events.find({
+      // Check for the selected event types. Create array of expressions to be used with $or operator.
+      var eventTypeValues = [];
+      if (!!filters.requestFreq) {
+        eventTypeValues.push({
+          event_type: "frequency",
+          value: {$gte: filters.minFreq, $lte: filters.maxFreq}
+        });
+      }
+
+      if (!!filters.requestVoltage) {
+        eventTypeValues.push({
+          event_type: "voltage",
+          value: {$gte: filters.minVoltage, $lte: filters.maxVoltage}
+        });
+      }
+
+      // Construct query object.
+      var query = {
         timestamp: {$gte: filters.startTime, $lte: filters.stopTime},
-        value: {$gte: filters.minFreq, $lte: filters.maxFreq},
-        duration: {$gte: filters.minDuration, $lte: filters.maxDuration}
-      },
-        {sort: {timestamp: -1}});
+        duration: {$gte: filters.minDuration, $lte: filters.maxDuration},
+        itic: {$in: filters.itic}
+      };
+
+      // Concat the $or expression to query, or set null event_type if no types selected.
+      (eventTypeValues.length > 0) ? query["$or"] = eventTypeValues : query["event_type"] = null;
+
+      // Query and return results.
+      return Events.find(query, {sort: {timestamp: -1}});
     }
 
-    // If no filters set yet, return all events.
+    // If no filters set, return all events.
     return Events.find({}, {sort: {timestamp: -1}}); // Reverse chronological timestamp.
   },
   totalEventCount: function() {
