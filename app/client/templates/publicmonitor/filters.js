@@ -1,104 +1,98 @@
+Template.filters.onCreated(function() {
+  const template = this;
+  template.eventFilters = template.data.eventFiltersRef;
+
+  Meteor.call("initialFiltersData", function(err, result) {
+    template.eventFilters.set(result);
+  });
+
+});
+
 Template.filters.onRendered(function() {
-  var template = Template.instance();
+  const template = this;
 
-  // Grab min/max event timestamps.
-  var startTime = Events.findOne({}, {sort: {timestamp: 1}});
-  var stopTime = Events.findOne({}, {sort: {timestamp: -1}});
+  // Sets the DateTimePicker widget values for start and stop time.
+  template.autorun(function() {
+    const eventFilters = template.eventFilters.get();
+    if (!!eventFilters) {
+      jQueryPromise('#startTime', 200, 2000)
+        .then(startTimePicker => {
+          startTimePicker.datetimepicker({
+            defaultDate: eventFilters.startTime,
+            format: "MM/DD/YYYY H:mm:ss"
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
 
-  // Initialize DateTimePicker input forms and set settings.
-  var startTimestamp = template.$("#startTime");
-  var stopTimestamp = template.$("#stopTime");
-
-  startTimestamp.datetimepicker({
-    defaultDate: new Date(startTime.timestamp),
-    format: "MM/DD/YYYY h:mm:ss"
+      jQueryPromise('#stopTime', 200, 2000)
+        .then(stopTimePicker => {
+          stopTimePicker.datetimepicker({
+            defaultDate: eventFilters.stopTime,
+            format: "MM/DD/YYYY H:mm:ss"
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
   });
 
-  stopTimestamp.datetimepicker({
-    defaultDate: new Date(stopTime.timestamp),
-    format: "MM/DD/YYYY h:mm:ss"
-  });
 });
 
 Template.filters.events({
+  'submit #filterForm': function(event, template) {
+    event.preventDefault();
+    console.log("Submit event triggered.");
+  },
   'blur .date': function(event) {
     //event.preventDefault(); // Blur has no default behavior
 
-    var timeInputField = event.currentTarget; // Gets the element that triggered event.
-    var tif = $(timeInputField); // Get same element via jQuery selector.
+    const timeInputField = event.currentTarget; // Gets the element that triggered event.
+    const tif = $(timeInputField); // Get same element via jQuery selector.
 
     // From DateTimePicker docs:
     // All functions are accessed via the data attribute e.g. $('#datetimepicker').data("DateTimePicker").FUNCTION()
     // FYI: The data() function is from jQuery. Allows us to store arbitrary data on any element.
-    // Date() function will actually grab the date. The date that we select and see on the datetimepicker widget
+    // Calling the date() function will actually grab the date (as a moment object). The date that we select and see on the datetimepicker widget
     // is purely visual and not actually set until we call this function.
+    // Also note that the widget seems to round to the nearest second. As a result, we add and subtract 1 second
+    // to the max and min timestamp before querying the database to avoid rounding issues.
     tif.data("DateTimePicker").date();
+
+    // Submit after change is made.
+    $("#filterForm").submit();
   },
-  // (Experimental). Submit form when input is detected.
+  // Submit form when any input is detected. Maybe unnecessary. Do it anyway!
   'change, keyup': function(event) {
     $("#filterForm").submit();
   }
 });
 
+
 Template.filters.helpers({
-  iticDefaultChecked: function() {
-    return ["ok", "moderate", "severe"];
+  filtersSchema() {
+    return Global.Schemas.EventFilters;
   },
-  prefill: function() {
-    var requestFreq, minFreq, maxFreq, requestVolt, minVolt, maxVolt, minDur, maxDur, itic, startTime, stopTime;
+  prefillFilters() {
+    return Template.instance().eventFilters.get();
+  },
+  getTemplateInstance() {
+    return Template.instance();
+  }
+});
 
-    if (!!Session.get('eventFilters')) {
-      var filters = Session.get('eventFilters');
-
-      // Simple check to see that session wasn't tampered with.
-      check(filters, Schemas.Filters);
-
-      //console.log(filters);
-
-      requestFreq = filters.requestFreq;
-      minFreq = filters.minFreq;
-      maxFreq = filters.maxFreq;
-      requestVolt = filters.requestVoltage;
-      minVolt = filters.minVoltage;
-      maxVolt = filters.maxVoltage;
-      minDur = filters.minDuration;
-      maxDur = filters.maxDuration;
-      itic = filters.itic.slice(0); // Copy all elements to new array, rather than reference.
-      startTime = filters.startTime;
-      stopTime = filters.stopTime;
-
-      return {
-        requestFreq: requestFreq,
-        minFreq: minFreq,
-        maxFreq: maxFreq,
-        requestVolt: requestVolt,
-        minVolt: minVolt,
-        maxVolt: maxVolt,
-        minDur: minDur,
-        maxDur: maxDur,
-        itic: itic,
-        startTime: startTime,
-        stopTime: stopTime
-      }
-    } else {
-
-      minFreq = Events.findOne({event_type: "frequency"}, {sort: {value: 1}});
-      maxFreq = Events.findOne({event_type: "frequency"}, {sort: {value: -1}});
-
-      minVolt = Events.findOne({event_type: "voltage"}, {sort: {value: 1}});
-      maxVolt = Events.findOne({event_type: "voltage"}, {sort: {value: -1}});
-
-      minDur = Events.findOne({}, {sort: {duration: 1}});
-      maxDur = Events.findOne({}, {sort: {duration: -1}});
-
-      return {
-        minFreq: minFreq.value,
-        maxFreq: maxFreq.value,
-        minVolt: minVolt.value,
-        maxVolt: maxVolt.value,
-        minDur: minDur.duration,
-        maxDur: maxDur.duration
-      };
+AutoForm.hooks({
+  filterForm: {
+    onSubmit: function(insertDoc, updateDoc, currentDoc) {
+      Global.Schemas.EventFilters.clean(insertDoc);
+      check(insertDoc, Global.Schemas.EventFilters);
+      // Because we cannot access template instance in Autoform hooks, we had to attach the template instance to the
+      // Autoform itself in order to access it here.
+      this.formAttributes.templateInstance.eventFilters.set(insertDoc);
+      this.done();
+      return false;
     }
   }
 });

@@ -6,13 +6,14 @@
     <div class="col-md-5">
       <div class="row">
         <div class="col-md-12">
-          {{> filters}}
+          {{> filters eventFiltersRef=getEventFiltersReference}}
         </div>
       </div>
 
       <div class="row">
         <div class="col-md-12">
-          {{> map}}
+          {{> map mapFiltersRef=getMapFiltersReference
+                  eventFiltersRef=getEventFiltersReference}}
         </div>
       </div>
     </div>
@@ -21,13 +22,21 @@
     <div class="col-md-7" id="public-map-right-col">
       <div class="row">
         <div class="col-md-12">
-          {{> eventList}}
+          {{> eventList eventFiltersRef=getEventFiltersReference
+                        mapFiltersRef=getMapFiltersReference
+                        selectedEventIdRef=getSelectedEventIdReference
+                        prevSelectedEventIdRef=getPrevSelectedEventIdReference
+                        selectedEventTriggerRef=getSelectedEventTriggerReference
+                        currentPageRef=getCurrentPageReference}}
         </div>
       </div>
 
       <div class="row">
         <div class="col-md-12">
-          {{> eventDetails}}
+          {{> eventDetails  selectedEventIdRef=getSelectedEventIdReference
+                            prevSelectedEventIdRef=getPrevSelectedEventIdReference
+                            selectedEventTriggerRef=getSelectedEventTriggerReference
+                            currentPageRef=getCurrentPageReference}}
         </div>
       </div>
     </div>

@@ -1,0 +1,187 @@
+<template name="measurements">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Voltage - {{newestMeasurement.voltage}} V</h3>
+        </div>
+        <div class="panel-body">
+          {{#if Template.subscriptionsReady}}
+            <div id="voltagePlot" style="height: 250px">{{deviceStatus}}</div>
+          {{else}}
+            {{> loading}}
+          {{/if}}
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Frequency - {{newestMeasurement.frequency}} Hz</h3>
+        </div>
+        <div class="panel-body">
+          {{#if Template.subscriptionsReady}}
+            <div id="freqPlot" style="height: 250px">{{deviceStatus}}</div>
+          {{else}}
+            {{> loading}}
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-3">
+      <div class="panel panel-default">
+        <div class="panel-heading clearfix">
+          <h3 class="panel-title">Device Selection</h3>
+        </div>
+        {{#if Template.subscriptionsReady}}
+          {{devices}}
+          <div id="deviceSelection" class="list-group">
+            {{#each id in deviceIds}}
+              <button id="device-{{id}}" type="button" class="list-group-item">Device ID: {{id}}</button>
+            {{/each}}
+          </div>
+        {{else}}
+          {{> loading}}
+        {{/if}}
+
+      </div>
+    </div>
+
+
+    <div class="col-md-6">
+      <div class="panel panel-default">
+          <div class="panel-heading clearfix">
+            <div id="measurement_time" class="btn-group pull-right" role="group" style="margin: -7px -10px;" aria-label="">
+              <button id="1m" type="button" class="btn btn-default">1 min.</button>
+              <button id="5m" type="button" class="btn btn-default">5 min.</button>
+              <button id="10m" type="button" class="btn btn-default">10 min.</button>
+            </div>
+            <h3 class="panel-title">Measurements</h3>
+          </div>
+          <div class="panel-body">
+            {{#if Template.subscriptionsReady}}
+              <div class="row">
+                <div class="col-md-4">
+                  <p style="margin-bottom: 0px">Voltage</p>
+                  <p style="font-size: 30px; margin-top: 0px">{{formatDecimals newestMeasurement.voltage}} V</p>
+                </div>
+                <div class="col-md-8">
+                  <div id="miniVoltagePlot" style="height: 100px">{{deviceStatus}}</div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-4">
+                  <p style="margin-bottom: 0px">Frequency</p>
+                  <p style="font-size: 30px; margin-top: 0px">{{formatDecimals newestMeasurement.frequency}} Hz</p>
+                </div>
+                <div class="col-md-8">
+                  <div id="miniFreqPlot" style="height: 100px">{{deviceStatus}}</div>
+                </div>
+              </div>
+            {{else}}
+              {{> loading}}
+            {{/if}}
+          </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading clearfix">
+          <div class="btn-group pull-right" role="group" style="margin: -7px -10px;" aria-label="">
+            <button id="1d" type="button" class="btn btn-default">1 day</button>
+            <button id="3d" type="button" class="btn btn-default">3 days</button>
+            <button id="7d" type="button" class="btn btn-default">1 week</button>
+          </div>
+          <div class="btn-group pull-right" role="group" style="margin: -7px 20px;" aria-label="">
+            <button id="voltageSnapshotToggle" type="button" class="btn btn-default">Voltage</button>
+            <button id="freqSnapshotToggle" type="button" class="btn btn-default">Frequency</button>
+          </div>
+          <h3 class="panel-title">Snapshots</h3>
+        </div>
+        <div class="panel-body">
+          {{#if snapshotLoading}}
+            {{> loading}}
+          {{else}}
+            <div id="voltagePlotSnapshot" style="height: 250px"></div>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-9">
+      <div class="panel panel-default">
+        <div class="panel-heading clearfix">
+          <div id="measurement_time" class="btn-group pull-right" role="group" style="margin: -7px -10px;" aria-label="">
+            <button id="1m" type="button" class="btn btn-default">1 min.</button>
+            <button id="5m" type="button" class="btn btn-default">5 min.</button>
+            <button id="10m" type="button" class="btn btn-default">10 min.</button>
+          </div>
+          <h3 class="panel-title">Measurements</h3>
+        </div>
+        <div class="panel-body">
+          {{#if Template.subscriptionsReady}}
+            <div class="row">
+              <div class="col-md-3">
+                <ul class="list-group">
+                  <li class="list-group-item">
+                    <span class="badge">14</span>
+                    Cras justo odio
+                  </li>
+                  <li class="list-group-item">
+                    <span class="badge">14</span>
+                    Cras justo odio
+                  </li>
+                  <li class="list-group-item">
+                    <span class="badge">14</span>
+                    Cras justo odio
+                  </li>
+                </ul>
+              </div>
+              <div class="col-md-9">
+                <div class="row">
+                  <div class="col-md-4">
+                    <p style="margin-bottom: 0px">Voltage</p>
+                    <p style="font-size: 30px; margin-top: 0px">{{formatDecimals newestMeasurement.voltage}} V</p>
+                  </div>
+                  <div class="col-md-8">
+                    <div id="miniVoltagePlot" style="height: 100px">{{deviceStatus}}</div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-4">
+                    <p style="margin-bottom: 0px">Frequency</p>
+                    <p style="font-size: 30px; margin-top: 0px">{{formatDecimals newestMeasurement.frequency}} Hz</p>
+                  </div>
+                  <div class="col-md-8">
+                    <div id="miniFreqPlot" style="height: 100px">{{deviceStatus}}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {{else}}
+            {{> loading}}
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    {{#each measurement in measurements}}
+      <p>{{formatDate measurement.timestamp_ms}} -- DeviceId: {{measurement.device_id}} Frequency: {{measurement.frequency}} Voltage: {{measurement.voltage}}</p>
+    {{/each}}
+  </div>
+
+</template>
+

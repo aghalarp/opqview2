@@ -1,0 +1,23 @@
+<template name="signup">
+  <!-- Two column layout. Left column: User Settings. Right column: E-Mail and SMS Settings. -->
+  <div class="row">
+
+    <!-- Sign up instructions -->
+    <div class="col-lg-4">
+      <div class="well">
+        <b>OPQHub Sign-Up</b>
+        <p>To create an OPQHub account. Fill out all fields on this page.</p>
+        <p>Fields marked with an "<b>*</b>" are required.</p>
+        <p>Once your account is created, you will be redirected to the OPQBox administration page. You will then be able register OPQBoxes with your account.</p>
+      </div>
+    </div>
+
+    <!-- Sign up form -->
+    <div class="col-lg-8">
+      {{> quickForm schema=signupSchema id="signupForm" type="normal" fields=signupFormFieldOrder}}
+    </div>
+
+  </div>
+
+
+</template>

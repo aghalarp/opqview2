@@ -2,11 +2,12 @@ body {
   padding-top: 70px;
 }
 
-.success {
-    text-align: center;
-    font-weight: bold;
-    color: green;
-}
+/* Interfering with bootstrap contextual highlight class */
+/*.success {*/
+    /*text-align: center;*/
+    /*font-weight: bold;*/
+    /*color: green;*/
+/*}*/
 
 .invalid {
   text-align: center;
@@ -32,6 +33,7 @@ body {
 
 #dropdown-menu {
     min-width: 260px;
+    padding: 15px;
 }
 
 .dropdown-input {

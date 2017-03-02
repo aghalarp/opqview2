@@ -17,48 +17,48 @@
       </div>
       <div class="panel-body">
         {{#with event}}
-        <div class="col-md-4">
-          <table class="table table-condensed">
-            <tbody>
-            <tr>
-              <td>Frequency</td>
-              <td id="details-frequency">
-                {{value}} Hz
-              </td>
-            </tr>
-            <tr>
-              <td>Voltage</td>
-              <td id="details-voltage">
-                {{value}} V
-              </td>
-            </tr>
-            <tr>
-              <td>Duration</td>
-              <td id="details-duration">
-                {{duration}} s
-              </td>
-            </tr>
-            <tr>
-              <td id="details-itic-title">ITIC</td>
-              <td id="details-itic-severity">
-                <span class='badge itic-badge itic-no-interruption'>&nbsp;</span>
-              </td>
-            </tr>
-            <tr>
-              <td>Location</td>
-              <td>
-                <a class="btn-link" id="details-grid-id">
-                  <!--@data.detailedEvent.event.getLocation.getGridId-->
-                </a>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-          <!--} else {-->
-          <!--No event details to display.-->
-          <!--}-->
-        </div>
-        <div id="waveform" class="col-md-4 plot"></div>
+          <div class="col-md-4">
+            <table class="table table-condensed">
+              <tbody>
+              <tr>
+                <td>Frequency</td>
+                <td id="details-frequency">
+                  {{formatDecimals frequency}} Hz
+                </td>
+              </tr>
+              <tr>
+                <td>Voltage</td>
+                <td id="details-voltage">
+                  {{formatDecimals voltage}} V
+                </td>
+              </tr>
+              <tr>
+                <td>Duration</td>
+                <td id="details-duration">
+                  {{duration}} s
+                </td>
+              </tr>
+              <tr>
+                <td id="details-itic-title">ITIC</td>
+                <td id="details-itic-severity">
+                  <span class='badge itic-badge {{iticBadge}}'>&nbsp;</span>
+                </td>
+              </tr>
+              <tr>
+                <td>Location</td>
+                <td>
+                  <a class="btn-link" id="details-grid-id">
+                    <!--@data.detailedEvent.event.getLocation.getGridId-->
+                  </a>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+            <!--} else {-->
+            <!--No event details to display.-->
+            <!--}-->
+          </div>
+          <div id="waveform" class="col-md-4 plot"></div>
         {{/with}}
       </div>
 

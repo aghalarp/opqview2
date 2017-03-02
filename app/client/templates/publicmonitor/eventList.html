@@ -12,39 +12,43 @@
         </h3>
       </div>
       <div class="panel-body" id="events-table">
-        <table>
-          <tr>
-            <td>Total Events</td> <td><span id="totalEvents" class='badge global-stats'>{{totalEventCount}}</span></td>
-            <td>Frequency Events</td> <td><span id="totalFrequencyEvents" class='badge global-stats'>{{freqEventCount}}</span></td>
-            <td>Voltage Events</td> <td><span id="totalVoltageEvents" class='badge global-stats'>{{voltageEventCount}}</span></td>
-          </tr>
-        </table>
-        <!--@if(data.totalEventsCount > 0) {-->
-        <table class="table table-hover" id="events">
-          <thead>
-          <tr>
-            <th>Timestamp</th>
-            <th>Type</th>
-            <th>Duration</th>
-            <th>Value</th>
-            <th>ITIC</th>
-          </tr>
-          </thead>
-          <tbody>
-            {{#each events}}
-              {{> event}}
-            {{/each}}
-          </tbody>
-        </table>
-        <!--} else {-->
-        <!--No events to display.-->
-        <!--}-->
+        {{#if Template.subscriptionsReady}}
+          <table>
+            <tr>
+
+              <td>Total Events</td> <td><span id="totalEvents" class='badge global-stats'>{{totalEventCount}}</span></td>
+              <td>Frequency Events</td> <td><span id="totalFrequencyEvents" class='badge global-stats'>{{freqEventCount}}</span></td>
+              <td>Voltage Events</td> <td><span id="totalVoltageEvents" class='badge global-stats'>{{voltageEventCount}}</span></td>
+
+            </tr>
+          </table>
+
+          <!--@if(data.totalEventsCount > 0) {-->
+          <table class="table table-hover" id="events">
+            <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Type</th>
+              <th>Duration</th>
+              <th>Value</th>
+              <th>ITIC</th>
+            </tr>
+            </thead>
+            <tbody>
+              {{#each events}}
+                {{> event}}
+              {{/each}}
+            </tbody>
+          </table>
+        {{else}}
+          {{> loading}}
+        {{/if}}
       </div>
       <div class="panel-footer panel-title">
         <button type="button" class="btn btn-primary btn-xs" id="prev-page-btn">
           <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
         </button>
-
+        {{getCurrentPage}} / {{getTotalPages}}
         <button type="button" class="btn btn-primary btn-xs" id="next-page-btn">
           <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
         </button>

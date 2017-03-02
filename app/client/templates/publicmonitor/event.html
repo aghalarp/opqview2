@@ -1,10 +1,10 @@
 <template name="event">
-  <tr id="{{_id}}">
+  <tr id="{{_id.valueOf}}">
     <td>{{formatDate timestamp}}</td>
-    <td>{{event_type}}</td>
+    <td>{{eventType}}</td>
     <td>{{duration}} s</td>
     <td>
-      {{value}} {{valueType}}
+      {{formattedValue}}
     </td>
     <td>
       <span class='badge itic-badge {{iticBadge}}'>&nbsp;</span>

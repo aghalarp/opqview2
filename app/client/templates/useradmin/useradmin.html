@@ -1,0 +1,93 @@
+<template name="useradmin">
+  <!-- Two column layout. Left column: User Settings. Right column: E-Mail and SMS Settings. -->
+  <div class="row">
+  {{#if Template.subscriptionsReady}}
+    {{#autoForm schema=userSettingsSchema template="bootstrap3-horizontal" id="userSettingsForm" doc=userSettingsDoc type="normal" resetOnSuccess=false}}
+
+      <!-- User Settings Column -->
+    <div class="col-lg-6">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                <i class="fa fa-user" style="margin-right: 5px;"></i>User Settings
+                <button style="margin-top:-7px" type="button" class="btn btn-default btn-sm pull-right" data-toggle="modal" data-target="#userSettingsModal">
+                  <i class="fa fa-question-circle fa-lg"></i>
+                </button>
+              </h3>
+            </div>
+            <div class="panel-body">
+              {{> afFieldInput name="userId" type="text" type="hidden"}}
+              {{> afFormGroup name="firstName" type="text" formgroup-class="col-md-12" label-class="col-md-4" input-col-class="col-md-8"}}
+              {{> afFormGroup name="lastName" type="text" formgroup-class="col-md-12" label-class="col-md-4" input-col-class="col-md-8"}}
+              {{> afFormGroup name="email" type="text" formgroup-class="col-md-12" label-class="col-md-4" input-col-class="col-md-8"}}
+              {{> afFormGroup name="alertEmail" type="text" formgroup-class="col-md-12" label-class="col-md-4" input-col-class="col-md-8"}}
+              {{> afFormGroup name="oldPassword" type="password" formgroup-class="col-md-12" label-class="col-md-4" input-col-class="col-md-8"}}
+              {{> afFormGroup name="newPassword" type="password" formgroup-class="col-md-12" label-class="col-md-4" input-col-class="col-md-8"}}
+              {{> afFormGroup name="confirmNewPassword" type="password" formgroup-class="col-md-12" label-class="col-md-4" input-col-class="col-md-8"}}
+
+              <!-- Update Buttons -->
+              <div class="col-md-12">
+                <button type="submit" class="btn btn-primary pull-right">Update</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- E-mail and SMS Alert Column -->
+    <div class="col-lg-6">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                <i class="fa fa-user" style="margin-right: 5px;"></i>E-mail & SMS Alert Settings
+                <button style="margin-top:-7px" type="button" class="btn btn-default btn-sm pull-right" data-toggle="modal" data-target="#userSettingsModal">
+                  <i class="fa fa-question-circle fa-lg"></i>
+                </button>
+              </h3>
+            </div>
+            <div class="panel-body">
+              {{> afFormGroup name="enableSmsAlerts" type="boolean-radios" trueLabel="Enabled" falseLabel="Disabled" formgroup-class="col-md-12" label-class="col-md-4" input-col-class="col-md-8"}}
+              {{> afFormGroup name="smsCarrier" type="select" formgroup-class="col-md-12" label-class="col-md-4" input-col-class="col-md-8"}}
+              {{> afFormGroup name="smsNumber" type="text" formgroup-class="col-md-12" label-class="col-md-4" input-col-class="col-md-8"}}
+              {{> afFormGroup name="iticRegionSmsThreshold" type="select-radio-inline" formgroup-class="col-md-12" label-class="col-md-4" input-col-class="col-md-8"}}
+              {{> afFormGroup name="enableEmailNotifications" type="boolean-radios" trueLabel="Enabled" falseLabel="Disabled" formgroup-class="col-md-12" label-class="col-md-4" input-col-class="col-md-8"}}
+              <div class="col-md-12">
+                <label class="col-md-4 control-label">Notification Types</label>
+                <div class="col-md-8">
+                  {{> afFormGroup name="enableEmailSummaryNotifications" type="boolean-checkbox" formgroup-class="col-md-4"  input-col-class="col-md-4"}}
+                  {{> afFormGroup name="enableEmailAlertNotifications" type="boolean-checkbox" formgroup-class="col-md-4" input-col-class="col-md-4"}}
+                </div>
+              </div>
+              <div class="col-md-12">
+                <label class="col-md-4 control-label">Summary Freq.</label>
+                <div class="col-md-8">
+                  {{> afFormGroup name="enableEmailSummaryDaily" type="boolean-checkbox" formgroup-class="col-md-4"  input-col-class="col-md-4"}}
+                  {{> afFormGroup name="enableEmailSummaryWeekly" type="boolean-checkbox" formgroup-class="col-md-4" input-col-class="col-md-4"}}
+                </div>
+              </div>
+              {{> afFormGroup name="iticRegionEmailThreshold" type="select-radio-inline" formgroup-class="col-md-12" label-class="col-md-5" input-col-class="col-md-7"}}
+
+              <div class="col-md-12">
+                <button type="submit" class="btn btn-primary pull-right">Update</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{/autoForm}}
+  {{else}}
+    {{> loading}}
+  {{/if}}
+  </div>
+
+
+</template>

@@ -2,3 +2,4 @@
 *.iml
 .DS_Store
 settings.production.json
+app/node_modules

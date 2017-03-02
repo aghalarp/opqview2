@@ -1,30 +1,44 @@
 <template name="header">
-  <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+  <!-- Responsive navbar -->
+  <div class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
-      <!-- Brand and toggle get grouped for better mobile display -->
       <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <!--  Display three horizontal lines when navbar collapsed. -->
+          <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#">OPQView</a>
+        <a href={{pathForPublicmonitor}} class="navbar-brand">OPQView</a>
       </div>
 
-      <!-- Navigation links and dropdown menus -->
-      <div class="collapse navbar-collapse" id="navigation">
-        <ul class="nav navbar-nav">
-          <li><a href="#">Example Link</a></li>
+      <!-- Drop down login -->
+      <div class="dropdown pull-right" id="login-dropdown">
+        <button class="btn btn-default btn-sm dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
           {{#if currentUser}}
-            <li><a href="#">Logged-In Link</a></li>
+            {{currentUserEmail}}
+          {{else}}
+            Login / Sign Up
+          {{/if}}
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" id={{dropdownId}} role="menu" aria-labelledby="dropdown-menu">
+          {{#if currentUser}}
+            <li role="presentation"><a href={{pathForAccount}} role="menuitem" tabindex="-1"><span class="glyphicon glyphicon-user"></span> Account</a></li>
+            <li role="presentation"><a href={{pathForDeviceadmin}} role="menuitem" tabindex="-1"><span class="glyphicon glyphicon-hdd"></span> OPQBoxes</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a href={{pathForPublicmonitor}} role="menuitem" tabindex="-1"><span class="glyphicon glyphicon-eye-open"></span> Public Analysis</a></li>
+            <li role="presentation"><a href={{pathForMeasurements}} role="menuitem" tabindex="-1"><span class="glyphicon glyphicon-flash"></span> Live Measurements</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a id="logout-btn" role="menuitem" tabindex="-1" href=""><span class="glyphicon glyphicon-off"></span> Log Out</a></li>
+          {{else}}
+            {{#autoForm schema=loginSchema id="loginForm" type="normal"}}
+              {{> afFormGroup type="text" name="email"}}
+              {{> afFormGroup type="password" name='password'}}
+              <button type="submit" class="btn btn-primary btn-sm">Log In</button>
+              <a href={{pathForSignup}} id="signup-btn" class="btn btn-info btn-sm">Sign Up</a>
+            {{/autoForm}}
           {{/if}}
         </ul>
-
-        <ul class="nav navbar-nav navbar-right">
-          {{> loginButtons}}
-        </ul>
-      </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
-  </nav>
+      </div>
+    </div>
+  </div>
 </template>
