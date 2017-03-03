@@ -52,3 +52,12 @@ FlowRouter.route('/measurements', {
   }
 });
 
+FlowRouter.route('/live', {
+  name: 'liveRoute',
+  action: function() {
+    BlazeLayout.render('appLayout', {
+      main: 'measurements'
+    });
+  }
+});
+

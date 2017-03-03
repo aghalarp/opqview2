@@ -118,66 +118,6 @@
   </div>
 
   <div class="row">
-    <div class="col-md-9">
-      <div class="panel panel-default">
-        <div class="panel-heading clearfix">
-          <div id="measurement_time" class="btn-group pull-right" role="group" style="margin: -7px -10px;" aria-label="">
-            <button id="1m" type="button" class="btn btn-default">1 min.</button>
-            <button id="5m" type="button" class="btn btn-default">5 min.</button>
-            <button id="10m" type="button" class="btn btn-default">10 min.</button>
-          </div>
-          <h3 class="panel-title">Measurements</h3>
-        </div>
-        <div class="panel-body">
-          {{#if Template.subscriptionsReady}}
-            <div class="row">
-              <div class="col-md-3">
-                <ul class="list-group">
-                  <li class="list-group-item">
-                    <span class="badge">14</span>
-                    Cras justo odio
-                  </li>
-                  <li class="list-group-item">
-                    <span class="badge">14</span>
-                    Cras justo odio
-                  </li>
-                  <li class="list-group-item">
-                    <span class="badge">14</span>
-                    Cras justo odio
-                  </li>
-                </ul>
-              </div>
-              <div class="col-md-9">
-                <div class="row">
-                  <div class="col-md-4">
-                    <p style="margin-bottom: 0px">Voltage</p>
-                    <p style="font-size: 30px; margin-top: 0px">{{formatDecimals newestMeasurement.voltage}} V</p>
-                  </div>
-                  <div class="col-md-8">
-                    <div id="miniVoltagePlot" style="height: 100px">{{deviceStatus}}</div>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-4">
-                    <p style="margin-bottom: 0px">Frequency</p>
-                    <p style="font-size: 30px; margin-top: 0px">{{formatDecimals newestMeasurement.frequency}} Hz</p>
-                  </div>
-                  <div class="col-md-8">
-                    <div id="miniFreqPlot" style="height: 100px">{{deviceStatus}}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          {{else}}
-            {{> loading}}
-          {{/if}}
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row">
     {{#each measurement in measurements}}
       <p>{{formatDate measurement.timestamp_ms}} -- DeviceId: {{measurement.device_id}} Frequency: {{measurement.frequency}} Voltage: {{measurement.voltage}}</p>
     {{/each}}
