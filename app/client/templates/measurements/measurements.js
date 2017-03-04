@@ -11,13 +11,30 @@ Template.measurements.onCreated(function() {
   template.selectedDeviceId = ReactiveVar();
 
   template.autorun(function() {
-    //const selectedDeviceId = template.selectedDeviceId.get();
     const secondsAgo = template.measurementStartTimeSecondsAgo.get();
     if (secondsAgo) {
       template.subscribe('measurements', secondsAgo);
     }
   });
 
+  // Ensures selected device is highlighted. If no device selected yet (eg. initial page load), will select default device.
+  template.autorun(function() {
+    const selectedDeviceId = template.selectedDeviceId.get();
+
+    if (template.subscriptionsReady()) {
+      // If no device selected yet, select device with lowest device_id value by default.
+      if (!selectedDeviceId) {
+        const deviceId = Measurements.findOne({}, {sort: {device_id: 1}}).device_id; // Select by lowest device_id.
+        if (deviceId) {
+          template.selectedDeviceId.set(deviceId); // Select device.
+          jQueryPromise(`#device-${deviceId}`, 200, 2000).then(deviceButton => deviceButton.addClass('active')); // Highlight selected device.
+        }
+      } else {
+        jQueryPromise(`#device-${selectedDeviceId}`, 200, 2000).then(deviceButton => deviceButton.addClass('active')); // Highlight selected device.
+      }
+
+    }
+  });
 
   template.autorun(function() {
     if (template.subscriptionsReady()) {
