@@ -9,43 +9,71 @@ Template.measurements.onCreated(function() {
   template.snapshotLoading = ReactiveVar(false);
   template.snapshotVoltFreqToggle = ReactiveVar('voltage');
   template.selectedDeviceId = ReactiveVar();
+  template.activeDeviceIds = ReactiveVar();
 
-  template.autorun(function() {
-    const secondsAgo = template.measurementStartTimeSecondsAgo.get();
-    if (secondsAgo) {
-      template.subscribe('measurements', secondsAgo);
-    }
-  });
 
-  // Ensures selected device is highlighted. If no device selected yet (eg. initial page load), will select default device.
+  // Check for active devices, handles initial/default device selection.
   template.autorun(function() {
     const selectedDeviceId = template.selectedDeviceId.get();
 
     if (template.subscriptionsReady()) {
-      // If no device selected yet, select device with lowest device_id value by default.
-      if (!selectedDeviceId) {
-        const deviceId = Measurements.findOne({}, {sort: {device_id: 1}}).device_id; // Select by lowest device_id.
-        if (deviceId) {
-          template.selectedDeviceId.set(deviceId); // Select device.
-          jQueryPromise(`#device-${deviceId}`, 200, 2000).then(deviceButton => deviceButton.addClass('active')); // Highlight selected device.
+      Meteor.call('getActiveDeviceIds', Date.now() - (60 * 1000), function(err, deviceIds) {
+        if (err) console.log(err);
+        if (deviceIds && deviceIds.length > 0) {
+          template.activeDeviceIds.set(deviceIds);
+          if (!selectedDeviceId) template.selectedDeviceId.set(deviceIds[0]); // Select first device by default.
         }
-      } else {
-        jQueryPromise(`#device-${selectedDeviceId}`, 200, 2000).then(deviceButton => deviceButton.addClass('active')); // Highlight selected device.
-      }
-
+      });
     }
   });
 
+  // Subscription
   template.autorun(function() {
-    if (template.subscriptionsReady()) {
-      const selectedDeviceId = template.selectedDeviceId.get();
-      const selector = (selectedDeviceId) ? {device_id: selectedDeviceId} : {};
-      const measurements = Measurements.find(selector, {sort: {timestamp_ms: 1}});
+    const selectedDeviceId = template.selectedDeviceId.get();
+    const secondsAgo = template.measurementStartTimeSecondsAgo.get();
 
-      //const xaxisTickSize = measurements.count() / 9;
-      const timeZoneOffset = new Date().getTimezoneOffset() * 60 * 1000; // Positive if -UTC, negative if +UTC.
+    if (secondsAgo && selectedDeviceId) {
+      Meteor.subscribe('measurements', secondsAgo, selectedDeviceId);
+    }
+  });
 
-      if (measurements.count()) {
+  // Ensures selected device is highlighted.
+  template.autorun(function() {
+    const selectedDeviceId = template.selectedDeviceId.get();
+
+    if (selectedDeviceId && template.subscriptionsReady()) {
+      // Un-highlight old device, highlight new device.
+      jQueryPromise('#deviceSelection > button.active', 200, 2000)
+          .then(deviceBtn => deviceBtn.removeClass('active'))
+          .catch(error => console.log(error));
+
+      jQueryPromise(`#device-${selectedDeviceId}`, 200, 2000)
+          .then(deviceBtn => deviceBtn.addClass('active'))
+          .catch(error => console.log(error));
+    }
+  });
+
+  // Handles graph plotting.
+  template.autorun(function() {
+    const selectedDeviceId = template.selectedDeviceId.get();
+    const measurementStartTimeSecondsAgo = template.measurementStartTimeSecondsAgo.get();
+    const timeZoneOffset = new Date().getTimezoneOffset() * 60 * 1000; // Positive if -UTC, negative if +UTC.
+
+    if (selectedDeviceId && template.subscriptionsReady()) {
+      // Note on the filter: Although the publication is supposed to send removal calls to the client on measurements
+      // outside of the startTime range, it seems that once in a while these messages get lost over the wire.
+      // Consequently, the server believes the measurement has been removed, while the client collection still holds it,
+      // resulting in the plot displaying data outside of the intended time range (which gets worse over time).
+      // The simple solution is to filter on the client side and ensure we are only displaying data within the intended
+      // time frame.
+      // Also of note: It's much faster to simply filter() on the resulting mongo query result, rather than to query
+      // with {timestamp_ms: {$gte: startTime}}. Meteor's Minimongo implementation isn't very efficient.
+      const startTime = Date.now() - (measurementStartTimeSecondsAgo * 1000);
+      const measurements = Measurements.find({device_id: selectedDeviceId}, {sort: {timestamp_ms: 1}})
+          .fetch()
+          .filter(measurement => measurement.timestamp_ms >= startTime);
+
+      if (measurements.length > 0) {
         const voltages = measurements.map(data => {
           return [data.timestamp_ms - timeZoneOffset, data.voltage];
         });
@@ -91,6 +119,7 @@ Template.measurements.onCreated(function() {
     }
   });
 
+  // Handles measurement snapshot calls.
   template.autorun(function() {
     const snapshotStartTimestamp = template.snapshotRequest.get();
 
@@ -108,10 +137,10 @@ Template.measurements.onCreated(function() {
     }
   });
 
+  // Handles measurement snapshot plotting.
   template.autorun(function() {
     const snapshotData = template.snapshotResultData.get();
     const voltFreqToggle = template.snapshotVoltFreqToggle.get();
-
 
     if (snapshotData && voltFreqToggle) {
       //const timeZoneOffset = new Date().getTimezoneOffset() * 60 * 1000; // Positive if -UTC, negative if +UTC.
@@ -151,12 +180,10 @@ Template.measurements.onRendered(function() {
   let init1minButton = true;
   template.autorun(function() {
     if (init1minButton && template.subscriptionsReady()) {
-      const prom = jQueryPromise('#1m', 200, 2000);
-      prom.then(button => {
-        button.addClass('active');
-      }).catch((error) => {
-        console.log(error);
-      });
+      jQueryPromise('#1m', 200, 2000)
+          .then(button => button.addClass('active'))
+          .catch(error => console.log(error));
+
       init1minButton = false;
     }
   });
@@ -164,72 +191,48 @@ Template.measurements.onRendered(function() {
   let initVoltageSnapshotButton = true;
   template.autorun(function() {
     if (initVoltageSnapshotButton && template.subscriptionsReady()) {
-      const prom = jQueryPromise('#voltageSnapshotToggle', 200, 2000);
-      prom.then(button => {
-        button.addClass('active');
-      }).catch((error) => {
-        console.log(error);
-      });
+      jQueryPromise('#voltageSnapshotToggle', 200, 2000)
+          .then(button => button.addClass('active'))
+          .catch(error => console.log(error));
+
       initVoltageSnapshotButton = false;
     }
   });
-
-
-
-  //template.autorun(function() {
-  //  if (template.subscriptionsReady()) {
-  //    Tracker.afterFlush(function() {
-  //      $('#1m').addClass('active');
-  //    });
-  //  }
-  //});
 
 });
 
 Template.measurements.helpers({
   measurements() {
     const template = Template.instance();
+    const selectedDeviceId = template.selectedDeviceId.get();
 
-    if (template.subscriptionsReady()) {
-      const selectedDeviceId = template.selectedDeviceId.get();
-      const selector = (selectedDeviceId) ? {device_id: selectedDeviceId} : {};
-      const measurements = Measurements.find(selector, {sort: {timestamp_ms: -1}});
-
+    if (selectedDeviceId && template.subscriptionsReady()) {
+      const measurements = Measurements.find({device_id: selectedDeviceId}, {sort: {timestamp_ms: -1}, limit: 10});
       return measurements;
     }
   },
   newestMeasurement() {
     const template = Template.instance();
+    const selectedDeviceId = template.selectedDeviceId.get();
 
-    if (template.subscriptionsReady) {
-      const selectedDeviceId = template.selectedDeviceId.get();
-      const selector = (selectedDeviceId) ? {device_id: selectedDeviceId} : {};
-      const measurement = Measurements.findOne(selector, {sort: {timestamp_ms: -1}});
+    if (selectedDeviceId && template.subscriptionsReady()) {
+      const measurement = Measurements.findOne({device_id: selectedDeviceId}, {sort: {timestamp_ms: -1}});
       return measurement;
     }
   },
   snapshotLoading() {
     return Template.instance().snapshotLoading.get();
   },
-  deviceStatus() {
-    const template = Template.instance();
-
-    if (template.subscriptionsReady()) {
-      const selectedDeviceId = template.selectedDeviceId.get();
-      const selector = (selectedDeviceId) ? {device_id: selectedDeviceId} : {};
-      return (Measurements.find(selector).count() > 0) ? 'Device online' : 'Device offline';
-    }
-  },
   deviceIds() {
     const template = Template.instance();
+    const activeDeviceIds = template.activeDeviceIds.get();
 
-    if (template.subscriptionsReady()) {
-      const measurements = Measurements.find({}, {
-        fields: {device_id: 1},
-        sort: {device_id: 1}
-      }).fetch();
-      return _.uniq(_.pluck(measurements, 'device_id'));
-    }
+    return (activeDeviceIds && activeDeviceIds.length > 0) ? activeDeviceIds : null;
+  },
+  deviceStatus() {
+    const template = Template.instance();
+    const activeDeviceIds = template.activeDeviceIds.get();
+    return (activeDeviceIds && activeDeviceIds.length > 0) ? 'Device Online' : 'Device Offline';
   }
 });
 
@@ -292,8 +295,8 @@ Template.measurements.events({
   'click #deviceSelection button': function(event) {
     const template = Template.instance();
     const deviceId = Number(event.currentTarget.id.replace('device-', ''));
-    $('#deviceSelection > button.active').removeClass('active');
-    $(`#device-${deviceId}`).addClass('active');
+    // $('#deviceSelection > button.active').removeClass('active');
+    // $(`#device-${deviceId}`).addClass('active');
     template.selectedDeviceId.set(deviceId);
   }
 });

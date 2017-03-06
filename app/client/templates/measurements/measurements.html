@@ -3,7 +3,7 @@
     <div class="col-md-6">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <h3 class="panel-title">Voltage - {{newestMeasurement.voltage}} V</h3>
+          <h3 class="panel-title">Voltage</h3>
         </div>
         <div class="panel-body">
           {{#if Template.subscriptionsReady}}
@@ -17,7 +17,7 @@
     <div class="col-md-6">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <h3 class="panel-title">Frequency - {{newestMeasurement.frequency}} Hz</h3>
+          <h3 class="panel-title">Frequency</h3>
         </div>
         <div class="panel-body">
           {{#if Template.subscriptionsReady}}
@@ -37,7 +37,6 @@
           <h3 class="panel-title">Device Selection</h3>
         </div>
         {{#if Template.subscriptionsReady}}
-          {{devices}}
           <div id="deviceSelection" class="list-group">
             {{#each id in deviceIds}}
               <button id="device-{{id}}" type="button" class="list-group-item">Device ID: {{id}}</button>
@@ -63,10 +62,11 @@
           </div>
           <div class="panel-body">
             {{#if Template.subscriptionsReady}}
+              {{#let measurement = newestMeasurement}}
               <div class="row">
                 <div class="col-md-4">
                   <p style="margin-bottom: 0px">Voltage</p>
-                  <p style="font-size: 30px; margin-top: 0px">{{formatDecimals newestMeasurement.voltage}} V</p>
+                  <p style="font-size: 30px; margin-top: 0px">{{formatDecimals measurement.voltage}} V</p>
                 </div>
                 <div class="col-md-8">
                   <div id="miniVoltagePlot" style="height: 100px">{{deviceStatus}}</div>
@@ -76,12 +76,13 @@
               <div class="row">
                 <div class="col-md-4">
                   <p style="margin-bottom: 0px">Frequency</p>
-                  <p style="font-size: 30px; margin-top: 0px">{{formatDecimals newestMeasurement.frequency}} Hz</p>
+                  <p style="font-size: 30px; margin-top: 0px">{{formatDecimals measurement.frequency}} Hz</p>
                 </div>
                 <div class="col-md-8">
                   <div id="miniFreqPlot" style="height: 100px">{{deviceStatus}}</div>
                 </div>
               </div>
+              {{/let}}
             {{else}}
               {{> loading}}
             {{/if}}

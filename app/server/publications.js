@@ -22,9 +22,9 @@ Meteor.publish('measurements', function(startTimeSecondsAgo, deviceId) {
       self.added('measurements', id, fields);
 
       if (!init) {
-        const startTimeMs = Date.now() - (startTimeSecondsAgo * 1000);
+        const startTime = Date.now() - (startTimeSecondsAgo * 1000);
         publishedMeasurementsMap.forEach((id, timestamp) => { // Note: (id, timestamp) corresponds to (value, key)
-          if (timestamp < startTimeMs) {
+          if (timestamp < startTime) {
             self.removed('measurements', id);
             publishedMeasurementsMap.delete(timestamp);
           }

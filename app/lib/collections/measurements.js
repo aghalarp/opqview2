@@ -1,6 +1,7 @@
 if (Meteor.isServer) {
   //const OpqRemote = new MongoInternals.RemoteCollectionDriver('mongodb://127.0.0.1:9000/opq', {oplogUrl: 'mongodb://127.0.0.1:9000/local'});
-  const OpqRemote = new MongoInternals.RemoteCollectionDriver('mongodb://127.0.0.1:3002/opq');
+  //const OpqRemote = new MongoInternals.RemoteCollectionDriver('mongodb://emilia.ics.hawaii.edu/opq');
+  const OpqRemote = new MongoInternals.RemoteCollectionDriver('mongodb://localhost:3002/opq');
   Measurements = new Mongo.Collection('measurements', {idGeneration: 'MONGO', _driver: OpqRemote });
 } else {
   Measurements = new Mongo.Collection('measurements', {idGeneration: 'MONGO'});
@@ -36,6 +37,15 @@ Meteor.methods({
       console.log('Reduced measurements size: ', filteredMeasurements.length);
 
       return filteredMeasurements;
+    }
+  },
+  getActiveDeviceIds(startTimeMs = Date.now() - (60 * 1000)) {
+    if (Meteor.isServer) {
+      check(startTimeMs, Number);
+
+      const measurements = Measurements.find({timestamp_ms: {$gte: startTimeMs}}, {fields: {device_id: 1}}).fetch();
+      // Returns an array of unique deviceIds, sorted asc.
+      return (measurements.length > 0) ? _.uniq(_.pluck(measurements, 'device_id')).sort((a, b) => a - b) : null;
     }
   }
 });
