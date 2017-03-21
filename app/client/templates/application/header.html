@@ -30,12 +30,7 @@
             <li role="presentation" class="divider"></li>
             <li role="presentation"><a id="logout-btn" role="menuitem" tabindex="-1" href=""><span class="glyphicon glyphicon-off"></span> Log Out</a></li>
           {{else}}
-            {{#autoForm schema=loginSchema id="loginForm" type="normal"}}
-              {{> afFormGroup type="text" name="email"}}
-              {{> afFormGroup type="password" name='password'}}
-              <button type="submit" class="btn btn-primary btn-sm">Log In</button>
-              <a href={{pathForSignup}} id="signup-btn" class="btn btn-info btn-sm">Sign Up</a>
-            {{/autoForm}}
+            {{> login}}
           {{/if}}
         </ul>
       </div>
