@@ -1,6 +1,16 @@
 Template.login.onCreated(function() {
   const template = this;
 
+  // Validate data context.
+  template.autorun(() => {
+    new SimpleSchema({
+      withFlashAlert: {type: Object, optional: true},
+      "withFlashAlert.message": {type: String},
+      "withFlashAlert.type": {type: String},
+      "withFlashAlert.expireAtMillis": {type: Number}
+    }).validate(Template.currentData());
+  });
+
   template.flashAlert = (template.data.withFlashAlert) ? new ReactiveVar(template.data.withFlashAlert) : new ReactiveVar();
 });
 
