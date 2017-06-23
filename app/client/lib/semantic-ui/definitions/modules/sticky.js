@@ -1,6 +1,6 @@
 /*
   DO NOT MODIFY - This file has been generated and will be regenerated
-  Semantic UI v2.2.6
+  Semantic UI v2.2.1
 */
 /*!
  * # Semantic UI - Sticky
@@ -139,12 +139,7 @@ $.fn.sticky = function(parameters) {
         },
 
         determineContainer: function() {
-          if(settings.container) {
-            $container = $(settings.container);
-          }
-          else {
-            $container = $module.offsetParent();
-          }
+          $container = $module.offsetParent();
         },
 
         determineContext: function() {
@@ -891,7 +886,6 @@ $.fn.sticky.settings = {
   pushing        : false,
 
   context        : false,
-  container      : false,
 
   // Context to watch scroll events
   scrollContext  : window,

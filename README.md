@@ -1,2 +1,2 @@
-# opqview
-Human user interface to OPQ System.
+# bowfolios
+Portfolios and networking for the University of Hawaii commnity.
