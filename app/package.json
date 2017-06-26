@@ -8,6 +8,7 @@
     "es6-mapify": "^1.0.0",
     "faker": "^3.1.0",
     "flot-charts": "^0.8.3",
+    "jsdoc": "^3.4.3",
     "lodash": "^4.16.2",
     "meteor-node-stubs": "^0.2.3",
     "object-sizeof": "^1.1.1",
@@ -18,7 +19,11 @@
   },
   "postcss": {
     "plugins": {
-      "autoprefixer": {"browsers": ["last 2 versions"]}
+      "autoprefixer": {
+        "browsers": [
+          "last 2 versions"
+        ]
+      }
     }
   },
   "scripts": {
