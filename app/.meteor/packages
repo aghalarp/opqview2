@@ -39,3 +39,5 @@ juliancwirko:postcss
 semantic:ui
 random
 bevanhunt:leaflet
+practicalmeteor:mocha
+dispatch:mocha
