@@ -1,11 +1,16 @@
 <template name="login">
-  {{#autoForm schema=loginSchema id="loginForm" type="normal"}}
-    {{> afFormGroup type="text" name="email"}}
-    {{> afFormGroup type="password" name='password'}}
-    <button type="submit" class="btn btn-primary btn-sm">Log In</button>
-    <a href={{pathForSignup}} id="signup-btn" class="btn btn-info btn-sm">Sign Up</a>
-  {{/autoForm}}
+  <form class="ui form login-form">
+    <div class="field">
+      <label>E-Mail</label>
+      <input name="email" type="text">
+    </div>
 
-  {{> flashAlert flashAlertReactiveVar=(getTemplateInstanceVariable 'flashAlert') withMarginTop=true}}
+    <div class="field">
+      <label>Password</label>
+      <input name="password" type="password">
+    </div>
 
+    <button class="ui button" type="submit">Log In</button>
+    <a class="ui button" type="submit" href={{pathForSignup}}>Sign Up</a>
+  </form>
 </template>

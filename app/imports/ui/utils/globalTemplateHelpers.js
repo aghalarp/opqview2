@@ -12,7 +12,7 @@ Template.registerHelper('getTemplateInstanceVariable', function(varName) {
 });
 
 Template.registerHelper('formatDate', function(date) {
-  return moment(date).format('HH:mm:ss [[]DD MMM YYYY[]]');
+  return (typeof date === 'number') ? moment(date).format('HH:mm:ss [[]DD MMM YYYY[]]') : null;
 });
 
 Template.registerHelper('formatDecimals', function(decimals, number) {

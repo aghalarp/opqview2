@@ -72,7 +72,7 @@ body {
 }
 
 .itic-badge {
-    m/argin-left: 10px;
+    /*margin-left: 10px;*/
 }
 
 .itic-no-interruption {
@@ -373,3 +373,8 @@ we'll still call it expanded for naming consistency and simplicity.
 #header-wrapper .ui.menu {
     z-index: 1000;
 }
+
+/*#recent-events {*/
+    /*max-height: 300px;*/
+    /*overflow-y: scroll;*/
+/*}*/

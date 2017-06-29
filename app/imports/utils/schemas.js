@@ -7,8 +7,8 @@
 
 import './global.js';
 import '../api/persons/persons.js';
-import '../api/opqDevices/opqDevices.js';
-import '../api/locations/locations.js';
+// import '../api/opqDevices/opqDevices.js';
+// import '../api/locations/locations.js';
 
 // Register custom validation error messages.
 SimpleSchema.messages({
@@ -192,16 +192,16 @@ Global.Schemas.UserSettings = new SimpleSchema([
   }
 }]);
 
-Global.Schemas.DeviceadminForm = new SimpleSchema([
-  OpqDevices.simpleSchema().pick(['deviceId', 'accessKey', 'description', 'sharingData']),
-  Locations.simpleSchema(),
-  {
-    device_id: {
-      type: String // Actually ObjectID toString. Must convert to ObjectID on server to utilize.
-    },
-    location_id: {
-      type: String, // ObjectID. See above.
-      optional: true
-    }
-  }
-]);
+// Global.Schemas.DeviceadminForm = new SimpleSchema([
+//   OpqDevices.simpleSchema().pick(['deviceId', 'accessKey', 'description', 'sharingData']),
+//   Locations.simpleSchema(),
+//   {
+//     device_id: {
+//       type: String // Actually ObjectID toString. Must convert to ObjectID on server to utilize.
+//     },
+//     location_id: {
+//       type: String, // ObjectID. See above.
+//       optional: true
+//     }
+//   }
+// ]);

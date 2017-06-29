@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
+import { Template } from 'meteor/templating';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { ReactiveVar } from 'meteor/reactive-var';
 import SimulatedEvents from '../../../api/simulatedEvents/simulatedEvents.js';
@@ -8,11 +9,15 @@ import SimulatedEvents from '../../../api/simulatedEvents/simulatedEvents.js';
 import './measurements.html';
 import '../../components/liveMeasurements/liveMeasurements.js';
 import '../../components/map/map.js';
+// import '../../components/flashMessage/flashMessage.js';
+// import { flashMessageConstructor } from '../../components/flashMessage/flashMessage.js';
 
 
 
 Template.measurements.onCreated(function() {
   const template = this;
+  //template.flashMessage = new ReactiveVar(createFlashMessageMsgObject('positive', 10, 'Test body message', '', 'feed'));
+  // flashMessageConstructor(this);
 
   template.selectedEventId = new ReactiveVar();
 
@@ -95,10 +100,8 @@ Template.measurements.helpers({
 
     const selectedEventId = template.selectedEventId.get();
     const event = SimulatedEvents.findOne({_id: new Mongo.ObjectID(selectedEventId)});
-    console.log("outside", selectedEventId, event);
 
     if (selectedEventId && event && template.subscriptionsReady()) {
-      console.log("inside", event);
       return event;
     }
   },

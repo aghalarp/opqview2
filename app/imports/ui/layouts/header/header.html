@@ -3,21 +3,6 @@
   <div class="ui fixed menu">
     <!--<div class="ui container">-->
       <div class="header item">OPQView</div>
-      <a class="active item">Link</a>
-      <a class="item">Link</a>
-      <div class="ui dropdown item">
-        Dropdown
-        <i class="dropdown icon"></i>
-        <div class="menu">
-          <div class="item">Action</div>
-          <div class="item">Another Action</div>
-          <div class="item">Something else here</div>
-          <div class="divider"></div>
-          <div class="item">Separated Link</div>
-          <div class="divider"></div>
-          <div class="item">One more separated link</div>
-        </div>
-      </div>
       <div id="liveMeasurementsNavbar" class="ui item">
         {{> liveMeasurementsNavbar}}
       </div>
@@ -29,7 +14,31 @@
             <button class="ui button">Submit</button>
           </div>
         </div>
-        <a class="item">Link</a>
+
+        <div class="ui dropdown item">
+          {{#if currentUser}}
+            <i class="user icon"></i>
+            {{currentUserEmail}}
+          {{else}}
+            Login / Sign Up
+          {{/if}}
+          <i class="dropdown icon"></i>
+          <div class="menu">
+            {{#if currentUser}}
+              <div class="item"><i class="user icon"></i> Account</div>
+              <div class="item"><i class="setting icon"></i> OPQBox Settings</div>
+              <div class="ui divider" style="margin: 0px;"></div>
+              <div class="item" id="logout-btn"><i class="sign out icon"></i> Log Out</div>
+            {{else}}
+              <div class="item" style="display: none;"></div> <!-- Hack: Need item for dropdown to work -->
+              <div style="padding: 15px;">
+                {{> login withEmptyDataContext}}
+              </div>
+            {{/if}}
+          </div>
+
+        </div>
+
       </div>
     <!--</div>-->
   </div>
