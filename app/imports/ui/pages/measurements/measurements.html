@@ -70,6 +70,9 @@
                       <td>[{{subevent.lat}}, {{subevent.lng}}]</td>
                       <td><span style="padding-left: 15px; margin-left: 15px;" class='badge itic-badge {{getIticBadge subevent.itic}}'>&nbsp;</span></td>
                     </tr>
+                    <tr>
+                      <td colspan="5" style="max-width: 1px;"><div id="waveform-{{subevent._id.valueOf}}" class="plot"></div></td>
+                    </tr>
                   {{/each}}
                 {{else}}
                   <tr>
@@ -79,15 +82,14 @@
                     <td>[{{event.lat}}, {{event.lng}}]</td>
                     <td><span style="padding-left: 15px; margin-left: 15px;" class='badge itic-badge {{getIticBadge event.itic}}'>&nbsp;</span></td>
                   </tr>
+                  <tr>
+                    <td colspan="5" style="max-width: 1px;"><div id="waveform-{{event._id.valueOf}}" class="plot"></div></td>
+                  </tr>
                 {{/if}}
               {{/if}}
             {{/let}}
           </tbody>
         </table>
-        <div class="ui bottom attached segment">
-
-          <div id="waveform" class="plot"></div>
-        </div>
       </div>
 
 

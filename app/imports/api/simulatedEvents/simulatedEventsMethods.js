@@ -80,9 +80,11 @@ const generateDistributedEvent = () => {
     events = _.uniq(events, (event) => event.opqbox_id); // Remove duplicate box ids if they occur.
   }
 
-  // Ensure all events have same event type.
+  // Ensure all events have same event type. Also generate an id for each sub-event since they are not inserted
+  // into Mongo individually.
   const eventType = eventTypes[faker.random.number({min: 0, max: eventTypes.length - 1})];
   events = events.map(event => {
+    event._id = new Mongo.ObjectID();
     event.event_type = eventType;
     return event;
   });

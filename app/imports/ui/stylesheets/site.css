@@ -68,7 +68,7 @@ body {
   padding: 60px;
   height: 200px;
   /*width: 400px;*/
-    width: 100%;
+    max-width: 100%;
 }
 
 .itic-badge {

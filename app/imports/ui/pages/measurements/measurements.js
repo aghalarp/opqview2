@@ -25,6 +25,27 @@ Template.measurements.onCreated(function() {
     Meteor.subscribe('simulatedEvents', 60);
   });
 
+  // Automatically selects most recent event received from server.
+  template.autorun(() => {
+    const newestEvent = SimulatedEvents.findOne({}, {sort: {timestamp_ms: -1}});
+
+    if (newestEvent && template.subscriptionsReady()) {
+      const newestEventId = newestEvent._id.toHexString();
+      template.selectedEventId.set(newestEventId);
+    }
+  });
+
+  // Ensures most recently selected event is highlighted.
+  template.autorun(() => {
+    const selectedEventId = template.selectedEventId.get();
+
+    if (selectedEventId && template.subscriptionsReady()) {
+      // Highlight newest event, un-highlight old event.
+      template.$('#recent-events > tbody >  tr').removeClass('active');
+      template.$(`#recent-events tr#${selectedEventId}`).addClass('active');
+    }
+  });
+
 });
 
 Template.measurements.onRendered(function() {
@@ -43,18 +64,13 @@ Template.measurements.onRendered(function() {
   // Plots waveform whenever an event is selected.
   template.autorun(function() {
     const selectedEventId = template.selectedEventId.get();
+    const event = SimulatedEvents.findOne({_id: new Mongo.ObjectID(selectedEventId)});
+    console.log(event);
 
-    if (selectedEventId && template.subscriptionsReady()) {
+    if (selectedEventId && event && template.subscriptionsReady()) {
       Tracker.afterFlush(function() {
-        const waveformData = SimulatedEvents.findOne({_id: new Mongo.ObjectID(selectedEventId)}).waveform;
 
-        // Create an array of [x, y] points
-        const plotPoints = waveformData.split(",")
-            .map(function(pt, idx) {
-              return [idx, parseFloat(pt)];
-            });
-
-        // Some of these options are deprecated... fix later.
+        // Plot options. Some of these options are deprecated... fix later.
         const plotOptions = {
           zoom: {
             interactive: true
@@ -82,7 +98,32 @@ Template.measurements.onRendered(function() {
           }
         };
 
-        $.plot($("#waveform"), [plotPoints], plotOptions);
+        if (event.type == 'Distributed') {
+          event.events.forEach(event => {
+            const waveformData = event.waveform;
+
+            // Create an array of [x, y] points
+            const plotPoints = waveformData.split(",")
+                .map(function(pt, idx) {
+                  return [idx, parseFloat(pt)];
+                });
+
+            // Plot
+            $.plot($(`#waveform-${event._id.toHexString()}`), [plotPoints], plotOptions);
+          });
+        } else {
+          const waveformData = event.waveform;
+
+          // Create an array of [x, y] points
+          const plotPoints = waveformData.split(",")
+              .map(function(pt, idx) {
+                return [idx, parseFloat(pt)];
+              });
+
+          // Plot
+          $.plot($(`#waveform-${selectedEventId}`), [plotPoints], plotOptions);
+        }
+
       });
     }
   });
@@ -127,6 +168,12 @@ Template.measurements.helpers({
     }
 
     return badge;
+  },
+  plotMaxWidth: function() {
+    const template = Template.instance();
+    const width = template.$('#selected-event').width();
+    console.log(width);
+    return width - 300;
   }
 });
 
