@@ -7,7 +7,7 @@ export const getActiveDeviceIdsVM = new ValidatedMethod({
   name: 'Measurements.getActiveDeviceIds',
   validate: new SimpleSchema({
     startTimeMs: {type: Number}
-  }).validator(),
+  }).validator({clean: true}),
   run({ startTimeMs }) {
     const recentMeasurements = Measurements.find({timestamp_ms: {$gte: startTimeMs}}, {fields: {device_id: 1}}).fetch();
 
