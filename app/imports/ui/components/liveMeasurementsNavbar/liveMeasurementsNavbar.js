@@ -1,5 +1,6 @@
 import './liveMeasurementsNavbar.html';
-import Measurements from '../../../api/measurements/measurements.js';
+import { Measurements } from '../../../api/measurements/measurements.js';
+import { getActiveDeviceIdsVM } from '../../../api/measurements/measurementsMethods.js';
 import { jQueryPromise } from '../../../utils/utils.js';
 
 import '../liveMeasurements/liveMeasurements.js';
@@ -30,7 +31,9 @@ Template.liveMeasurementsNavbar.onCreated(function liveMeasurementsNavbarOnCreat
     const selectedDeviceId = template.selectedDeviceId.get();
 
     if (template.subscriptionsReady()) {
-      Meteor.call('getActiveDeviceIds', Date.now() - (60 * 1000), function(err, deviceIds) {
+      getActiveDeviceIdsVM.call({
+        startTimeMs: Date.now() - (60 * 1000)
+      }, (err, deviceIds) => {
         if (err) console.log(err);
         if (deviceIds && deviceIds.length > 0) {
           template.activeDeviceIds.set(deviceIds);
