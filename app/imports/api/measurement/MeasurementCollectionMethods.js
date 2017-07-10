@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { Measurements } from './measurements.js';
+import { Measurements } from './MeasurementCollection.js';
 
 export const getActiveDeviceIdsVM = new ValidatedMethod({
   name: 'Measurements.getActiveDeviceIds',
