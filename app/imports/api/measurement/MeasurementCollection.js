@@ -30,7 +30,7 @@ class MeasurementCollection extends BaseCollection {
    */
   publish() {
     if (Meteor.isServer) {
-      const measurementsPublications = require('./measurementsPublications.js').measurementsPublications;
+      const measurementsPublications = require('./MeasurementCollectionPublications.js').measurementCollectionPublications;
       measurementsPublications();
     }
   }

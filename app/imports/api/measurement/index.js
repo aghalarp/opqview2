@@ -1,2 +1,2 @@
-import './measurements.js';
-import './measurementsMethods.js';
+import './MeasurementCollection.js';
+import './MeasurementCollectionMethods.js';

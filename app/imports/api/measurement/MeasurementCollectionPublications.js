@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Measurements } from './MeasurementCollection.js';
 
-export const measurementsPublications = () => {
+export const measurementCollectionPublications = () => {
   Meteor.publish(Measurements.publicationNames.RECENT_MEASUREMENTS, function (startTimeSecondsAgo, deviceId) {
     check(startTimeSecondsAgo, Number);
     const self = this;
