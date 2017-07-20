@@ -1,8 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { ReactiveVar } from 'meteor/reactive-var';
-import { Measurements } from '../../../api/measurements/measurements.js';
-import { getActiveDeviceIdsVM } from '../../../api/measurements/measurementsMethods.js';
+import { Measurements } from '../../../api/measurement/MeasurementCollection.js';
+import { getActiveDeviceIdsVM } from '../../../api/measurement/MeasurementCollectionMethods.js';
 import { jQueryPromise } from '../../../utils/utils.js';
 
 // Templates
@@ -45,7 +45,11 @@ Template.liveMeasurements.onCreated(function liveMeasurementsOnCreated() {
     const secondsAgo = template.measurementStartTimeSecondsAgo.get();
 
     if (secondsAgo && selectedDeviceId) {
-      Meteor.subscribe('measurements', secondsAgo, selectedDeviceId);
+      // console.log(Measurements.getPublicationNames());
+      // Measurements._publicationNames.
+      // Meteor.subscribe(Measurements.publicationNames.RECENT_MEASUREMENTS, secondsAgo, selectedDeviceId);
+      // template.subscribe(Measurements.publicationNames.RECENT_MEASUREMENTS, secondsAgo, selectedDeviceId);
+      Measurements.subscribe(Measurements.publicationNames.RECENT_MEASUREMENTS, template, secondsAgo, selectedDeviceId);
     }
   });
 
