@@ -1,6 +1,6 @@
 import './liveMeasurementsNavbar.html';
-import { Measurements } from '../../../api/measurements/measurements.js';
-import { getActiveDeviceIdsVM } from '../../../api/measurements/measurementsMethods.js';
+import { Measurements } from '../../../api/measurement/MeasurementCollection.js';
+import { getActiveDeviceIdsVM } from '../../../api/measurement/MeasurementCollectionMethods.js';
 import { jQueryPromise } from '../../../utils/utils.js';
 
 import '../liveMeasurements/liveMeasurements.js';
@@ -49,7 +49,7 @@ Template.liveMeasurementsNavbar.onCreated(function liveMeasurementsNavbarOnCreat
     const secondsAgo = template.measurementStartTimeSecondsAgo.get();
 
     if (secondsAgo && selectedDeviceId) {
-      Meteor.subscribe('measurements', secondsAgo, selectedDeviceId);
+      Measurements.subscribe(Measurements.publicationNames.RECENT_MEASUREMENTS, template, secondsAgo, selectedDeviceId);
     }
   });
 
