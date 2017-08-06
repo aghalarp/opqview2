@@ -6,7 +6,8 @@
  */
 
 import './global.js';
-import '../api/persons/persons.js';
+import { Persons } from '../api/persons/persons.js';
+import { SimpleSchema} from 'meteor/aldeed:simple-schema';
 // import '../api/opqDevices/opqDevices.js';
 // import '../api/locations/locations.js';
 
@@ -56,14 +57,14 @@ Global.Schemas.EventFilters = new SimpleSchema({
   },
   itic: {
     type: [Number],
-    allowedValues: [Global.Enums.IticRegion.PROHIBITED, Global.Enums.IticRegion.NO_DAMAGE, Global.Enums.IticRegion.NO_INTERRUPTION],
-    autoform: {
-      options: [
-        {label: "Severe", value: Global.Enums.IticRegion.PROHIBITED},
-        {label: "Moderate", value: Global.Enums.IticRegion.NO_DAMAGE},
-        {label: "OK", value: Global.Enums.IticRegion.NO_INTERRUPTION}
-      ]
-    }
+    // allowedValues: [Global.Enums.IticRegion.PROHIBITED, Global.Enums.IticRegion.NO_DAMAGE, Global.Enums.IticRegion.NO_INTERRUPTION],
+    // autoform: {
+    //   options: [
+    //     {label: "Severe", value: Global.Enums.IticRegion.PROHIBITED},
+    //     {label: "Moderate", value: Global.Enums.IticRegion.NO_DAMAGE},
+    //     {label: "OK", value: Global.Enums.IticRegion.NO_INTERRUPTION}
+    //   ]
+    // }
   },
   startTime: {
     type: Date
@@ -127,7 +128,7 @@ Global.Schemas.AddOpqBox = new SimpleSchema({
  * @type {SimpleSchema}
  */
 Global.Schemas.Signup = new SimpleSchema([
-  Persons.simpleSchema().pick(['firstName', 'lastName', 'alertEmail', 'smsCarrier', 'smsNumber']),
+  Persons.getSchema().pick(['firstName', 'lastName', 'alertEmail', 'smsCarrier', 'smsNumber']),
   {
     email: { // Accounts-password
       type: String,
@@ -156,6 +157,28 @@ Global.Schemas.Signup = new SimpleSchema([
   }
 ]);
 
+export const signupPageSchema = new SimpleSchema([
+  Persons.getSchema().pick(['firstName', 'lastName']),
+  {
+    email: { // Accounts-password
+      type: String,
+      label: "E-mail *",
+      regEx: SimpleSchema.RegEx.Email
+    },
+    password: { // Accounts-password
+      type: String
+    },
+    confirmPassword: {
+      type: String,
+      custom: function () {
+        if (this.value !== this.field('password').value) {
+          return "passwordMismatch";
+        }
+      }
+    }
+  }
+]);
+
 
 /**
  * Schema for "both" forms on the  user settings page (it's actually one form disguised as two).
@@ -163,7 +186,7 @@ Global.Schemas.Signup = new SimpleSchema([
  * @type {SimpleSchema}
  */
 Global.Schemas.UserSettings = new SimpleSchema([
-  Persons.simpleSchema(),
+  Persons.getSchema(),
   {
   email: { // Accounts-password
     type: String,
