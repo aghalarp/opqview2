@@ -245,7 +245,7 @@ body {
 
 /* Some rules for removing padding. Useful for removing grid gutters when needed. */
 .no-padding {
-    padding: 0px !important;;
+    padding: 0px !important;
 }
 
 .no-padding-top {
@@ -378,3 +378,11 @@ we'll still call it expanded for naming consistency and simplicity.
     /*max-height: 300px;*/
     /*overflow-y: scroll;*/
 /*}*/
+
+.float-left {
+    float: left !important;
+}
+
+.float-right {
+    float: right !important;
+}
