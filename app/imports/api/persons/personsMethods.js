@@ -1,10 +1,10 @@
 import { Meteor } from 'meteor/meteor';
 import { Roles } from 'meteor/alanning:roles';
-import Persons from './persons.js';
+import { Persons } from './persons.js';
 
 Meteor.methods({
   createPerson(person) {
-    check(person, Persons.simpleSchema());
+    check(person, Persons.getSchema());
 
     // Make sure userId exists before inserting.
     if (!Meteor.users.findOne({_id: person.userId})) {
@@ -14,7 +14,7 @@ Meteor.methods({
     // Set default User role. (perhaps better to do this using Accounts.onCreateUser?)
     Roles.addUsersToRoles(person.userId, 'user', 'user-type');
 
-    return Persons.insert(person); // Document id is returned on success.
+    return Persons.define(person); // Document id is returned on success.
   },
   updatePerson(personModifier) {
     // Validate against schema. No need to check the $unset portion, because we're simply removing it.
