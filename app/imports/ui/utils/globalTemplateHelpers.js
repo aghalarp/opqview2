@@ -12,7 +12,7 @@ Template.registerHelper('getTemplateInstanceVariable', function(varName) {
 });
 
 Template.registerHelper('formatDate', function(date) {
-  return (typeof date === 'number') ? moment(date).format('HH:mm:ss [[]DD MMM YYYY[]]') : null;
+  return (typeof date === 'number' || date instanceof Date) ? moment(date).format('HH:mm:ss [[]DD MMM YYYY[]]') : null;
 });
 
 Template.registerHelper('formatDecimals', function(decimals, number) {
@@ -58,4 +58,24 @@ Template.registerHelper('generateRandomIdString', () => {
 
 Template.registerHelper('isEqual', (first, second) => {
   return first === second;
+});
+
+Template.registerHelper('fieldError', (fieldName) => {
+  const validationContext = Template.instance().validationContext;
+  const invalidKeys = validationContext.invalidKeys();
+  console.log('invalidKeys: ', invalidKeys);
+  const errorObj = _.find(invalidKeys, (keyErrorObj) => keyErrorObj.name === fieldName);
+  if (errorObj) console.log(validationContext.keyErrorMessage(errorObj.name));
+  return (errorObj) ? validationContext.keyErrorMessage(errorObj.name) : '';
+});
+
+Template.registerHelper('hasFormError', () => {
+  const validationContext = Template.instance().validationContext;
+  return !validationContext.isValid();
+});
+
+Template.registerHelper('formSubmissionErrors', () => {
+  // Assumes there is a ReactiveVar on the template named formSubmissionErrors.
+  const formSubmissionErrors = Template.instance().formSubmissionErrors.get();
+  return formSubmissionErrors;
 });
