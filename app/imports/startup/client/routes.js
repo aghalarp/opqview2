@@ -5,6 +5,7 @@ import '../../ui/layouts/appLayout/appLayoutPublic.js';
 
 import '../../ui/pages/measurements/measurements.js';
 import '../../ui/pages/signup/signup.js';
+import '../../ui/pages/research/research.js';
 
 
 FlowRouter.route('/', {
@@ -21,6 +22,15 @@ FlowRouter.route('/signup', {
   action: function() {
     BlazeLayout.render('appLayoutPublic', {
       main: 'signup'
+    });
+  }
+});
+
+FlowRouter.route('/research', {
+  name: 'researchRoute',
+  action: function() {
+    BlazeLayout.render('appLayoutPublic', {
+      main: 'research'
     });
   }
 });
