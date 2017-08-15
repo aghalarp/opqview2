@@ -110,12 +110,14 @@ Template.liveMeasurements.onRendered(function() {
           return [data.timestamp_ms - timeZoneOffset, data.frequency];
         });
 
-        const tickSize = template.measurementStartTimeSecondsAgo.get() / 5;
+        // Calculate tick size for graph.
+        // const tickSize = template.measurementStartTimeSecondsAgo.get() / 5;
+        const measurementsTimestampRange = voltages[voltages.length - 1][0] - voltages[0][0];
+        const tickSize = measurementsTimestampRange / (5 * 1000);
 
         // jQueryPromise('[id^=miniVoltagePlot]', 100, 200, template)
         //     .then(voltagePlotDiv => console.log(voltagePlotDiv.attr('id'), 'FROM PROMISE'))
         //     .catch(error => console.log(error));
-
         const voltagePlotId = template.$('[id^=miniVoltagePlot]').attr('id');
         const freqPlotId = template.$('[id^=miniFreqPlot]').attr('id');
 
