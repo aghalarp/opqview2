@@ -92,6 +92,22 @@
         </table>
       </div>
 
+      <div class="sixteen wide column">
+        {{#each event in boxEvents}}
+          <p>
+            {{event._id}} - Event Start: {{event.eventStart}} - Event End: {{event.eventEnd}} - Request_id: {{event.reqId}}
+          </p>
+        {{/each}}
+      </div>
+
+      <div class="sixteen wide column">
+        {{#each reqId in requestIds}}
+          <p>
+            {{reqId}}
+          </p>
+        {{/each}}
+      </div>
+
 
       <!--<div class="eleven wide column">-->
         <!--{{> liveMeasurements withEmptyDataContext}}-->

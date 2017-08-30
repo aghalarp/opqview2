@@ -4,6 +4,8 @@ import { Template } from 'meteor/templating';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { ReactiveVar } from 'meteor/reactive-var';
 import SimulatedEvents from '../../../api/simulatedEvents/simulatedEvents.js';
+import { BoxEvents } from '../../../api/boxEvent/BoxEventCollection.js';
+import { getRecentEventDataReqIds } from '../../../api/eventData/EventDataCollectionMethods.js'
 
 // Templates and Sub-Template Inclusions
 import './measurements.html';
@@ -20,9 +22,13 @@ Template.measurements.onCreated(function() {
   // flashMessageConstructor(this);
 
   template.selectedEventId = new ReactiveVar();
+  template.recentEventDataReqIds = new ReactiveVar();
+  template.selectedEventDataReqId = new ReactiveVar();
 
+  // Subscriptions
   template.autorun(() => {
-    Meteor.subscribe('simulatedEvents', 60);
+    template.subscribe('simulatedEvents', 60);
+    //template.subscribe(BoxEvents.publicationNames.COMPLETE_RECENT_BOX_EVENTS, 20);
   });
 
   // Automatically selects most recent event received from server.
@@ -43,6 +49,21 @@ Template.measurements.onCreated(function() {
       // Highlight newest event, un-highlight old event.
       template.$('#recent-events > tbody >  tr').removeClass('active');
       template.$(`#recent-events tr#${selectedEventId}`).addClass('active');
+    }
+  });
+
+  // Get most recent EventData Ids.
+  template.autorun(() => {
+    if (template.subscriptionsReady()) {
+      getRecentEventDataReqIds.call({numEvents: 20}, (err, requestIds) => {
+        if (err) {
+          console.log(err)
+        } else {
+          console.log(requestIds);
+          template.recentEventDataReqIds.set(requestIds);
+          template.selectedEventDataReqId.set(requestIds[0]); // Select first event by default.
+        }
+      });
     }
   });
 
@@ -174,6 +195,14 @@ Template.measurements.helpers({
     const width = template.$('#selected-event').width();
     console.log(width);
     return width - 300;
+  },
+  boxEvents() {
+    const boxEvents = BoxEvents.find({}, {sort: {eventEnd: -1}});
+    return boxEvents;
+  },
+  requestIds() {
+    const requestIds = Template.instance().recentEventDataReqIds.get();
+    return requestIds;
   }
 });
 
