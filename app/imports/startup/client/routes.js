@@ -8,7 +8,7 @@ import '../../ui/pages/signup/signup.js';
 import '../../ui/pages/research/research.js';
 
 
-FlowRouter.route('/', {
+FlowRouter.route('/measurements', {
   name: 'liveRoute',
   action: function() {
     BlazeLayout.render('appLayoutPublic', {
@@ -26,7 +26,7 @@ FlowRouter.route('/signup', {
   }
 });
 
-FlowRouter.route('/research', {
+FlowRouter.route('/', {
   name: 'researchRoute',
   action: function() {
     BlazeLayout.render('appLayoutPublic', {
