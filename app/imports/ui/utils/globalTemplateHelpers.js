@@ -63,9 +63,9 @@ Template.registerHelper('isEqual', (first, second) => {
 Template.registerHelper('fieldError', (fieldName) => {
   const validationContext = Template.instance().validationContext;
   const invalidKeys = validationContext.invalidKeys();
-  console.log('invalidKeys: ', invalidKeys);
+  // console.log('Validation context invalidKeys', invalidKeys);
   const errorObj = _.find(invalidKeys, (keyErrorObj) => keyErrorObj.name === fieldName);
-  if (errorObj) console.log(validationContext.keyErrorMessage(errorObj.name));
+  // if (errorObj) console.log(validationContext.keyErrorMessage(errorObj.name));
   return (errorObj) ? validationContext.keyErrorMessage(errorObj.name) : '';
 });
 
