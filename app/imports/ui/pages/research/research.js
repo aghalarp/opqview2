@@ -3,7 +3,9 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { BoxEvents } from '../../../api/boxEvent/BoxEventCollection.js';
 import { EventData } from '../../../api/eventData/EventDataCollection.js';
-import { getRecentEventDataReqIds } from '../../../api/eventData/EventDataCollectionMethods.js'
+import { getRecentEventDataReqIds } from '../../../api/eventData/EventDataCollectionMethods.js';
+import { getEventMeasurements } from '../../../api/measurement/MeasurementCollectionMethods.js';
+import Chartjs from 'chart.js';
 
 // Templates and Sub-Template Inclusions
 import './research.html';
@@ -20,7 +22,7 @@ Template.research.onCreated(function() {
   template.isLoadingRecentEventDataReqIds = new ReactiveVar(false);
   template.selectedEventDataReqId = new ReactiveVar();
   template.toggleFullEvents = new ReactiveVar(false);
-  template.eventCountChart = null;
+  template.eventVRmsChart = null;
 
   // Subscriptions
   template.autorun(() => {
@@ -31,6 +33,101 @@ Template.research.onCreated(function() {
       template.subscribe(EventData.publicationNames.EVENT_DATA, Number(selectedEventId));
     }
   });
+
+  template.autorun(() => {
+    const selectedEventId = template.selectedEventId.get();
+    if (selectedEventId) {
+      getEventMeasurements.call({boxEvent_id: new Mongo.ObjectID(selectedEventId)}, (err, {eventMeasurements, precedingMeasurements, proceedingMeasurements}) => {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log(precedingMeasurements);
+          console.log(eventMeasurements);
+          // Ensure measurements are sorted in asc order (newest events at end of array).
+          eventMeasurements.sort((a, b) => {
+            return a.timestamp_ms - b.timestamp_ms;
+          });
+
+          precedingMeasurements.sort((a, b) => {
+            return a.timestamp_ms - b.timestamp_ms;
+          });
+
+          proceedingMeasurements.sort((a, b) => {
+            return a.timestamp_ms - b.timestamp_ms;
+          });
+
+          // Format data for chart.
+          const eventMeasurementsChartData = eventMeasurements.map(msr => {
+            return {x: new Date(msr.timestamp_ms), y: msr.voltage}
+          });
+
+          const precedingMeasurementsChartData = precedingMeasurements.map(msr => {
+            return {x: new Date(msr.timestamp_ms), y: msr.voltage}
+          });
+
+          const proceedingMeasurementsChartData = proceedingMeasurements.map(msr => {
+            return {x: new Date(msr.timestamp_ms), y: msr.voltage}
+          });
+
+
+          // Create Chart
+          const ctx = template.$('#selectedEventMeasurements');
+          if (template.selectedEventMeasurements) template.selectedEventMeasurements.destroy();
+          template.selectedEventMeasurements = new Chartjs(ctx, {
+            type: 'line',
+            data: {
+              datasets: [{
+                borderColor: '#ed8e53',
+                fill: false,
+                data: eventMeasurementsChartData,
+                pointRadius: 0,
+                lineTension: 0
+              }, {
+                borderColor: '#EEC751',
+                fill: false,
+                data: precedingMeasurementsChartData,
+                pointRadius: 0,
+                lineTension: 0
+              }, {
+                borderColor: '#EEC751',
+                fill: false,
+                data: proceedingMeasurementsChartData,
+                pointRadius: 0,
+                lineTension: 0
+              }]
+            },
+            options: {
+              legend: {
+                display: false
+              },
+              title:{
+                display: true,
+                text:"Voltage Measurements"
+              },
+              scales: {
+                xAxes: [{
+                  type: "time",
+                  display: true,
+                  scaleLabel: {
+                    display: true,
+                    labelString: 'Timestamp'
+                  }
+                }],
+                yAxes: [{
+                  display: true,
+                  scaleLabel: {
+                    display: true,
+                    labelString: 'Voltage'
+                  }
+                }]
+              }
+            }
+          });
+        }
+      });
+    }
+  });
+
 
   // Automatically selects most recent event received from server.
   // template.autorun(() => {
