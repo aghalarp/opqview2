@@ -42,8 +42,8 @@
                 {{/if}}
               {{else}}
                 {{#each event in boxEvents}}
-                  <!--<tr id={{event._id.valueOf}}>-->
-                  <tr id={{event.reqId}}>
+                  <tr id={{event._id.valueOf}}>
+                  <!--<tr id={{event.reqId}}>-->
                     <td>{{event.deviceId}}</td>
                     <td>{{event.eventType}}</td>
                     <td>{{formatDecimals 5 event.percent}}</td>
@@ -79,6 +79,17 @@
         </div>
         <div class="ui bottom attached segment">
           {{> eventCountChart}}
+        </div>
+      </div>
+
+      <div class="eight wide column">
+        <div class="ui top attached segment">
+          <h3 class="ui header">
+            Selected Event Measurements
+          </h3>
+        </div>
+        <div class="ui bottom attached segment">
+          <canvas id="selectedEventMeasurements"></canvas>
         </div>
       </div>
     </div>
